@@ -1,163 +1,123 @@
-{
- "cells": [
-  {
-   "cell_type": "code",
-   "execution_count": 3,
-   "id": "ba754c20-f731-4c41-8403-712bb9400541",
-   "metadata": {},
-   "outputs": [
-    {
-     "ename": "FileNotFoundError",
-     "evalue": "[Errno 2] No such file or directory: 'feature_list.json'",
-     "output_type": "error",
-     "traceback": [
-      "\u001b[1;31m---------------------------------------------------------------------------\u001b[0m",
-      "\u001b[1;31mFileNotFoundError\u001b[0m                         Traceback (most recent call last)",
-      "Cell \u001b[1;32mIn[3], line 8\u001b[0m\n\u001b[0;32m      5\u001b[0m \u001b[38;5;28;01mimport\u001b[39;00m \u001b[38;5;21;01mplotly\u001b[39;00m\u001b[38;5;21;01m.\u001b[39;00m\u001b[38;5;21;01mexpress\u001b[39;00m \u001b[38;5;28;01mas\u001b[39;00m \u001b[38;5;21;01mpx\u001b[39;00m\n\u001b[0;32m      7\u001b[0m \u001b[38;5;66;03m# Load model and features\u001b[39;00m\n\u001b[1;32m----> 8\u001b[0m \u001b[38;5;28;01mwith\u001b[39;00m \u001b[38;5;28mopen\u001b[39m(\u001b[38;5;124m\"\u001b[39m\u001b[38;5;124mfeature_list.json\u001b[39m\u001b[38;5;124m\"\u001b[39m, \u001b[38;5;124m\"\u001b[39m\u001b[38;5;124mr\u001b[39m\u001b[38;5;124m\"\u001b[39m) \u001b[38;5;28;01mas\u001b[39;00m f:\n\u001b[0;32m      9\u001b[0m     FEATURES \u001b[38;5;241m=\u001b[39m json\u001b[38;5;241m.\u001b[39mload(f)\n\u001b[0;32m     11\u001b[0m model \u001b[38;5;241m=\u001b[39m joblib\u001b[38;5;241m.\u001b[39mload(\u001b[38;5;124m\"\u001b[39m\u001b[38;5;124msleep_model.pkl\u001b[39m\u001b[38;5;124m\"\u001b[39m)\n",
-      "File \u001b[1;32m~\\anaconda3\\Anaconda\\Lib\\site-packages\\IPython\\core\\interactiveshell.py:324\u001b[0m, in \u001b[0;36m_modified_open\u001b[1;34m(file, *args, **kwargs)\u001b[0m\n\u001b[0;32m    317\u001b[0m \u001b[38;5;28;01mif\u001b[39;00m file \u001b[38;5;129;01min\u001b[39;00m {\u001b[38;5;241m0\u001b[39m, \u001b[38;5;241m1\u001b[39m, \u001b[38;5;241m2\u001b[39m}:\n\u001b[0;32m    318\u001b[0m     \u001b[38;5;28;01mraise\u001b[39;00m \u001b[38;5;167;01mValueError\u001b[39;00m(\n\u001b[0;32m    319\u001b[0m         \u001b[38;5;124mf\u001b[39m\u001b[38;5;124m\"\u001b[39m\u001b[38;5;124mIPython won\u001b[39m\u001b[38;5;124m'\u001b[39m\u001b[38;5;124mt let you open fd=\u001b[39m\u001b[38;5;132;01m{\u001b[39;00mfile\u001b[38;5;132;01m}\u001b[39;00m\u001b[38;5;124m by default \u001b[39m\u001b[38;5;124m\"\u001b[39m\n\u001b[0;32m    320\u001b[0m         \u001b[38;5;124m\"\u001b[39m\u001b[38;5;124mas it is likely to crash IPython. If you know what you are doing, \u001b[39m\u001b[38;5;124m\"\u001b[39m\n\u001b[0;32m    321\u001b[0m         \u001b[38;5;124m\"\u001b[39m\u001b[38;5;124myou can use builtins\u001b[39m\u001b[38;5;124m'\u001b[39m\u001b[38;5;124m open.\u001b[39m\u001b[38;5;124m\"\u001b[39m\n\u001b[0;32m    322\u001b[0m     )\n\u001b[1;32m--> 324\u001b[0m \u001b[38;5;28;01mreturn\u001b[39;00m io_open(file, \u001b[38;5;241m*\u001b[39margs, \u001b[38;5;241m*\u001b[39m\u001b[38;5;241m*\u001b[39mkwargs)\n",
-      "\u001b[1;31mFileNotFoundError\u001b[0m: [Errno 2] No such file or directory: 'feature_list.json'"
-     ]
-    }
-   ],
-   "source": [
-    "import streamlit as st\n",
-    "import joblib\n",
-    "import json\n",
-    "import pandas as pd\n",
-    "import plotly.express as px\n",
-    "\n",
-    "# Load model and features\n",
-    "with open(\"feature_list.json\", \"r\") as f:\n",
-    "    FEATURES = json.load(f)\n",
-    "\n",
-    "model = joblib.load(\"sleep_model.pkl\")\n",
-    "\n",
-    "# --------------------------\n",
-    "# PAGE SETUP\n",
-    "# --------------------------\n",
-    "st.set_page_config(page_title=\"😴 Sleep Wizard\", layout=\"wide\")\n",
-    "\n",
-    "if \"page\" not in st.session_state:\n",
-    "    st.session_state.page = 1\n",
-    "\n",
-    "\n",
-    "# --------------------------\n",
-    "# PAGE 1 – INPUT FORM\n",
-    "# --------------------------\n",
-    "if st.session_state.page == 1:\n",
-    "    st.title(\"😴 Sleep Wizard – Step 1: Enter Your Details\")\n",
-    "\n",
-    "    col1, col2 = st.columns(2)\n",
-    "\n",
-    "    with col1:\n",
-    "        screen_time_10pm_12am = st.slider(\"📱 Screen Time (10PM - 12AM, minutes)\", 0, 300, 60)\n",
-    "        screen_time_12am_3am = st.slider(\"📱 Screen Time (12AM - 3AM, minutes)\", 0, 300, 30)\n",
-    "        notifications_10pm_7am = st.slider(\"🔔 Notifications (10PM - 7AM)\", 0, 200, 20)\n",
-    "        social_minutes = st.slider(\"💬 Social Media Use (10PM - 3AM, minutes)\", 0, 300, 40)\n",
-    "\n",
-    "    with col2:\n",
-    "        brightness_avg = st.slider(\"🔆 Avg Brightness (10PM - 3AM, %)\", 0, 100, 50)\n",
-    "        dnd_enabled = st.selectbox(\"📴 Do Not Disturb at Night?\", [\"No\", \"Yes\"])\n",
-    "        exercise_minutes = st.slider(\"🏃 Exercise (Daytime, minutes)\", 0, 180, 45)\n",
-    "        stress_score = st.slider(\"😰 Stress Level (1=Low, 10=High)\", 1, 10, 5)\n",
-    "\n",
-    "    caffeine = st.selectbox(\"☕ Caffeine After 6PM?\", [\"No\", \"Yes\"])\n",
-    "    day_of_week = st.selectbox(\"📅 Day of the Week\", \n",
-    "                               [\"Monday\", \"Tuesday\", \"Wednesday\", \"Thursday\", \"Friday\", \"Saturday\", \"Sunday\"])\n",
-    "    exam_flag = st.selectbox(\"📖 Exam Period?\", [\"No\", \"Yes\"])\n",
-    "\n",
-    "    if st.button(\"➡️ Next\", key=\"next1\"):\n",
-    "        st.session_state.inputs = {\n",
-    "            \"screen_time_10PM_12AM\": screen_time_10pm_12am,\n",
-    "            \"screen_time_12AM_3AM\": screen_time_12am_3am,\n",
-    "            \"notifications_10PM_7AM\": notifications_10pm_7am,\n",
-    "            \"app_minutes_social_10PM_3AM\": social_minutes,\n",
-    "            \"brightness_avg_10PM_3AM\": brightness_avg,\n",
-    "            \"dnd_enabled_night\": 1 if dnd_enabled == \"Yes\" else 0,\n",
-    "            \"exercise_minutes_day\": exercise_minutes,\n",
-    "            \"stress_score_day\": stress_score,\n",
-    "            \"caffeine_after_6PM\": 1 if caffeine == \"Yes\" else 0,\n",
-    "            \"day_of_week\": day_of_week,\n",
-    "            \"exam_period_flag\": 1 if exam_flag == \"Yes\" else 0\n",
-    "        }\n",
-    "        st.session_state.page = 2\n",
-    "        st.experimental_rerun()\n",
-    "\n",
-    "\n",
-    "# --------------------------\n",
-    "# PAGE 2 – RESULTS\n",
-    "# --------------------------\n",
-    "if st.session_state.page == 2:\n",
-    "    st.title(\"📊 Sleep Wizard – Step 2: Results\")\n",
-    "\n",
-    "    # Prepare input\n",
-    "    sample = st.session_state.inputs\n",
-    "    sample_df = pd.DataFrame([{f: sample.get(f, 0) for f in FEATURES}])\n",
-    "\n",
-    "    # Predict risk\n",
-    "    risk = model.predict_proba(sample_df)[0][1]\n",
-    "    score = int((1 - risk) * 100)\n",
-    "\n",
-    "    st.subheader(f\"🛌 Your Sleep Hygiene Score: **{score}/100**\")\n",
-    "    if risk > 0.6:\n",
-    "        st.error(\"⚠️ High risk of poor sleep. Try reducing screen time and caffeine.\")\n",
-    "    elif risk > 0.3:\n",
-    "        st.warning(\"😐 Moderate risk. Some improvements needed.\")\n",
-    "    else:\n",
-    "        st.success(\"🎉 Low risk! Your sleep hygiene looks good.\")\n",
-    "\n",
-    "    # Chart 1 – Sleep Hygiene Score\n",
-    "    st.markdown(\"### 📈 Sleep Hygiene Breakdown\")\n",
-    "    fig1 = px.bar(\n",
-    "        x=[\"Score\", \"Risk\"],\n",
-    "        y=[score, int(risk * 100)],\n",
-    "        labels={\"x\": \"Metric\", \"y\": \"Value\"},\n",
-    "        title=\"Sleep Hygiene Score vs Risk\"\n",
-    "    )\n",
-    "    st.plotly_chart(fig1, use_container_width=True)\n",
-    "\n",
-    "    # Chart 2 – Distribution\n",
-    "    st.markdown(\"### 🌙 Sleep Quality Distribution (Dummy Data)\")\n",
-    "    dummy_data = pd.DataFrame({\n",
-    "        \"Quality\": [\"Good\", \"Poor\", \"Average\"],\n",
-    "        \"Users\": [40, 30, 30]\n",
-    "    })\n",
-    "    fig2 = px.pie(dummy_data, names=\"Quality\", values=\"Users\", title=\"Sleep Quality Distribution\")\n",
-    "    st.plotly_chart(fig2, use_container_width=True)\n",
-    "\n",
-    "    if st.button(\"🔄 Start Again\", key=\"restart\"):\n",
-    "        st.session_state.page = 1\n",
-    "        st.experimental_rerun()\n"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "id": "5e67bd4f-8632-42e0-990d-4d3ec14f69d8",
-   "metadata": {},
-   "outputs": [],
-   "source": []
-  }
- ],
- "metadata": {
-  "kernelspec": {
-   "display_name": "Python [conda env:base] *",
-   "language": "python",
-   "name": "conda-base-py"
-  },
-  "language_info": {
-   "codemirror_mode": {
-    "name": "ipython",
-    "version": 3
-   },
-   "file_extension": ".py",
-   "mimetype": "text/x-python",
-   "name": "python",
-   "nbconvert_exporter": "python",
-   "pygments_lexer": "ipython3",
-   "version": "3.12.7"
-  }
- },
- "nbformat": 4,
- "nbformat_minor": 5
-}
+import streamlit as st
+import joblib, json
+import pandas as pd
+import numpy as np
+import plotly.express as px
+
+# Load model & features
+pipe = joblib.load("sleep_disruption_model.pkl")
+with open("feature_list.json") as f:
+    feature_list = json.load(f)
+features = json.load(open("feature_list.json"))
+
+# Page settings
+st.set_page_config(page_title="Sleep Disruption Risk Predictor", page_icon="😴", layout="wide")
+
+# Title
+st.title("😴 Sleep Disruption Risk Predictor")
+st.markdown("### Adjust your nightly habits and see how they affect your sleep quality.")
+
+# Sidebar for user inputs
+st.sidebar.header("📊 Enter Your Habits")
+
+sample = {}
+for f in features:
+    if f in ["dnd_enabled_night","caffeine_after_18","exam_period_flag"]:
+        sample[f] = st.sidebar.selectbox(
+            f.replace("_"," ").title(),
+            [0,1],
+            format_func=lambda x: "Yes" if x==1 else "No"
+        )
+    elif f == "day_of_week":
+        sample[f] = st.sidebar.selectbox(
+            "Day of Week",
+            [0,1,2,3,4,5,6],
+            format_func=lambda x: ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"][x]
+        )
+    elif "22_24" in f:  # Late night screen time
+        t = st.sidebar.slider("📱 Screen Time (10 PM – 12 AM)", 0, 120, 30, step=5)
+        sample[f] = t
+    elif "18" in f:  # Caffeine after 6 PM
+        t = st.sidebar.slider("☕ Caffeine after 6 PM? (Yes=1, No=0)", 0, 1, 0)
+        sample[f] = t
+    elif "brightness" in f:
+        sample[f] = st.sidebar.slider("💡 Screen Brightness", 0.0, 1.0, 0.5, 0.1)
+    else:
+        # Generic input with hours & minutes
+        hours = st.sidebar.number_input(f"{f.replace('_',' ').title()} (Hours)", min_value=0, max_value=12, value=1)
+        minutes = st.sidebar.number_input(f"{f.replace('_',' ').title()} (Minutes)", min_value=0, max_value=59, value=0)
+        sample[f] = hours*60 + minutes  # convert to minutes total
+
+# Convert to DataFrame
+sample_df = pd.DataFrame([sample])
+
+# Prediction
+risk = pipe.predict_proba(sample_df)[0][1]
+score = int((1 - risk) * 100)
+
+# --- MAIN RESULTS ---
+st.subheader("📌 Predictions")
+col1, col2 = st.columns(2)
+
+with col1:
+    st.metric(label="Probability of Poor Sleep", value=f"{risk:.2f}")
+
+with col2:
+    st.metric(label="🌙 Sleep Hygiene Score", value=f"{score}/100")
+
+# Risk progress bar
+st.progress(int(risk*100))
+
+# --- FEATURE IMPORTANCE (Plotly) ---
+st.subheader("📊 Feature Importance")
+try:
+    clf = pipe.named_steps["classifier"]
+
+    if hasattr(clf, "coef_"):  # Logistic Regression
+        importances = clf.coef_[0]
+    elif hasattr(clf, "feature_importances_"):  # RandomForest, etc.
+        importances = clf.feature_importances_
+    else:
+        raise ValueError("Model type not supported for importance.")
+
+    importance_df = pd.DataFrame({"Feature": features, "Importance": importances})
+    importance_df = importance_df.sort_values("Importance", key=abs, ascending=False)
+
+    fig = px.bar(
+        importance_df,
+        x="Importance",
+        y="Feature",
+        orientation="h",
+        color="Importance",
+        color_continuous_scale="RdBu",
+        title="Which habits impact sleep the most?",
+    )
+    st.plotly_chart(fig, use_container_width=True)
+except Exception as e:
+    st.warning(f"Feature importance not available: {e}")
+
+# --- SIMULATED SLEEP DISTRIBUTION (Plotly) ---
+st.subheader("📊 Sleep Quality Distribution (Simulated)")
+simulated = np.random.choice(["Good Sleep","Poor Sleep"], size=200, p=[1-risk, risk])
+simulated_df = pd.DataFrame({"Sleep Quality": simulated})
+
+fig2 = px.histogram(
+    simulated_df,
+    x="Sleep Quality",
+    color="Sleep Quality",
+    color_discrete_map={"Good Sleep": "green", "Poor Sleep": "red"},
+    title="Distribution of Sleep Outcomes",
+    text_auto=True
+)
+st.plotly_chart(fig2, use_container_width=True)
+
+# --- TIP BOX ---
+st.markdown("---")
+if score >= 70:
+    st.success("✅ Great sleep hygiene! Keep it up 🌙")
+elif score >= 40:
+    st.warning("⚠️ Moderate risk. Try reducing screen/caffeine in the evening.")
+else:
+    st.error("❌ High risk! Limit late-night screens & caffeine to improve sleep.")
+
+
