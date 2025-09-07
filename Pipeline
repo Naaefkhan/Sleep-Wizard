@@ -1,0 +1,62 @@
+import json
+import joblib
+import numpy as np
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.preprocessing import StandardScaler
+from sklearn.pipeline import Pipeline
+from sklearn.datasets import make_classification
+
+# -------------------------------
+# Step 1: Define features
+# -------------------------------
+feature_list = [
+    "bed_time_hour",
+    "wake_time_hour",
+    "sleep_duration_hours",
+    "screen_time_minutes",
+    "caffeine_intake_mg",
+    "alcohol_units",
+    "exercise_minutes",
+    "stress_score",
+    "room_brightness",
+    "notifications_count",
+    "daytime_nap_minutes"
+]
+
+# Save features to JSON
+with open("feature_list.json", "w") as f:
+    json.dump(feature_list, f)
+
+print("✅ feature_list.json created")
+
+# -------------------------------
+# Step 2: Generate synthetic data
+# -------------------------------
+X, y = make_classification(
+    n_samples=1000,
+    n_features=len(feature_list),
+    n_informative=6,
+    n_redundant=2,
+    random_state=42
+)
+
+# -------------------------------
+# Step 3: Build pipeline (Scaler + RF)
+# -------------------------------
+pipe = Pipeline([
+    ("scaler", StandardScaler()),
+    ("clf", RandomForestClassifier(
+        n_estimators=200,
+        random_state=42
+    ))
+])
+
+# Train
+pipe.fit(X, y)
+
+# -------------------------------
+# Step 4: Save model
+# -------------------------------
+joblib.dump(pipe, "sleep_disruption_model.pkl")
+
+print("✅ Model saved as sleep_disruption_model.pkl")
